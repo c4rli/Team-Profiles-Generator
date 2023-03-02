@@ -10,11 +10,11 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./src/page-template.js");
 
-const managerQuestions = [
+const profileQuestions = [
     {
-        name: "managerName",
+        name: "employeeName",
         type: "input",
-        message: "Manager Name:"
+        message: "Employee Name:"
     },
     {
         name: "employeeID",
@@ -22,31 +22,47 @@ const managerQuestions = [
         message: "Employee ID:"
     },
     {
-        name: "emailAddress",
+        name: "employeeEmail",
         type: "input",
-        message: "Email Address:"
-    },
-    {
-        name: "officeNumber",
+        message: "Employee Email Address:"
+    }
+]
+
+const specialQuestions = {
+    manager: {
+        name: "managerOffice",
         type: "input",
         message: "Office Number"
     },
-]
+    engineer: {
+        name: "engineerGithub",
+        type: "input",
+        message: "Github Username:"
+    },
+    intern: {
+        name: "internSchool",
+        type: "input",
+        message: "School:"
+    }
+}
 
 // TODO: Write Code to gather information about the development team members, and render the HTML file.
 
-
 inquirer.prompt(
-    managerQuestions
+    profileQuestions
 ).then(response => {
+    // promptForEngineer();
     // populate manager info
-    // promptForNexEmployee ()
+    promptForNextEmployee ()
 })
 
 const promptForNextEmployee = () => {
     inquirer.prompt([{
-        // choice of 3
-    }]).then(response => {
+        name: "promptNext",
+        type: "list",
+        message: "Select:",
+        choices: ["Add engineer", "Add Intern", "Finish Building Team"]
+      }]).then(response => {
         // if engineer
         //    promptForEngineer
         // else if intern
@@ -57,9 +73,14 @@ const promptForNextEmployee = () => {
 }
 
 const promptForEngineer = () => {
-    inquirer.prompt([{
+    const engineerQuestions = profileQuestions.slice()
+    engineerQuestions.push(specialQuestions.engineer);
+
+    inquirer.prompt(
         //engineer questions
-    }]).then(response => {
+        engineerQuestions
+
+    ).then(response => {
         // add new engineer to employees array
         // promptForNextEmployee
     })
