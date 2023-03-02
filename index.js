@@ -10,16 +10,35 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./src/page-template.js");
 
-const managerQuestions = {
-    
-}
+const managerQuestions = [
+    {
+        name: "managerName",
+        type: "input",
+        message: "Manager Name:"
+    },
+    {
+        name: "employeeID",
+        type: "input",
+        message: "Employee ID:"
+    },
+    {
+        name: "emailAddress",
+        type: "input",
+        message: "Email Address:"
+    },
+    {
+        name: "officeNumber",
+        type: "input",
+        message: "Office Number"
+    },
+]
 
 // TODO: Write Code to gather information about the development team members, and render the HTML file.
 
 
-inquirer.prompt([{
-    //manager questions
-}]).then(response => {
+inquirer.prompt(
+    managerQuestions
+).then(response => {
     // populate manager info
     // promptForNexEmployee ()
 })
@@ -56,5 +75,5 @@ const promptForIntern = () => {
 }
 
 const buildPage = () => {
-// render(myArrayOfTeamMembers)
+    // render(myArrayOfTeamMembers)
 }
