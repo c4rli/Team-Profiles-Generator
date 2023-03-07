@@ -81,7 +81,7 @@ const questionProfiles = {
             message: "School:"
         }]
     },
-    getQuestions(type){
+    getQuestions(type) {
         return this.profileQuestions.concat(this.specialQuestions[type])
     }
 }
@@ -140,60 +140,88 @@ const promptForNextEmployee = () => {
 
 const displayMenu = (response) => {
     switch (response.promptNext) {
-        case menuOptions[0]: promptForEngineer();
+        case menuOptions[0]: promptForEmployee("engineer");
             break;
-        case menuOptions[1]: promptForIntern();
+        case menuOptions[1]: promptForEmployee("intern");
             break;
         case menuOptions[2]: finishBuildingTeam();
             break;
     }
 }
 
-const promptForEngineer = () => {
+const promptForEmployee = (type) => {
     inquirer.prompt(
-        //engineer questions
-
-        questionProfiles.getQuestions("engineer")
-        // internQuestions
-
+        questionProfiles.getQuestions(type)
     ).then(response => {
+        let employee = "employee";
+        if (type === "manager") {
+            employee = new Manager(response.employeeName, response.employeeID, response.employeeEmail, response.managerOffice);
+        }
+        else if (type === "engineer") {
+            employee = new Engineer(response.employeeName, response.employeeID, response.employeeEmail, response.engineerGithub);
+        }
+        else if (type === "intern") {
+            employee = new Intern(response.employeeName, response.employeeID, response.employeeEmail, response.internSchool);
+        }
         // add new engineer to employees array
+        teamArray.push(employee);
         promptForNextEmployee();
     })
 }
 
-const promptForIntern = () => {
+// const promptForEngineer = () => {
+//     inquirer.prompt(
+//         //engineer questions
 
-    inquirer.prompt(
-        //intern questions
-        questionProfiles.getQuestions("intern")
+//         questionProfiles.getQuestions("engineer")
+//         // internQuestions
 
-    ).then(response => {
-        // add new intern to employees array
-        promptForNextEmployee();
-    })
-}
+//     ).then(response => {
+//         const engineer = new Engineer(response.employeeName, response.employeeID, response.employeeEmail, response.engineerGithub)
 
-const promptForManager = () => {
+//         // add new engineer to employees array
+//         teamArray.push(engineer);
+//         promptForNextEmployee();
+//     })
+// }
 
-    inquirer.prompt(
-        //manager questions
-      questionProfiles.getQuestions("manager")
-        // getQuestions("manager")
-    ).then(response => {
+// const promptForIntern = () => {
 
-        const manager = new Manager(response.employeeName, response.employeeID, response.employeeEmail, response.managerOffice)
-        // add new manager to employees array
-        console.log(manager);
-        promptForNextEmployee();
-    })
-}
+//     inquirer.prompt(
+//         //intern questions
+//         questionProfiles.getQuestions("intern")
+
+//     ).then(response => {
+//         const intern = new Intern(response.employeeName, response.employeeID, response.employeeEmail, response.internSchool)
+
+//         // add new intern to employees array
+//         teamArray.push(intern);
+//         promptForNextEmployee();
+//     })
+// }
+
+// const promptForManager = () => {
+
+//     inquirer.prompt(
+//         //manager questions
+//         questionProfiles.getQuestions("manager")
+//         // getQuestions("manager")
+//     ).then(response => {
+//         const manager = new Manager(response.employeeName, response.employeeID, response.employeeEmail, response.managerOffice)
+//         // add new manager to employees array
+//         teamArray.push(manager);
+//         promptForNextEmployee();
+//     })
+// }
 
 const buildPage = () => {
     // render(myArrayOfTeamMembers)
+    console.log(render(teamArray))
 }
 
 function finishBuildingTeam() {
-
+    console.log(teamArray);
+    buildPage()
 }
-promptForManager();
+// promptForManager();
+promptForEmployee("manager");
