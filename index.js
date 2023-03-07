@@ -10,53 +10,110 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./src/page-template.js");
 
-const profileQuestions = [
-    {
-        name: "employeeName",
-        type: "input",
-        message: "Employee Name:"
-    },
-    {
-        name: "employeeID",
-        type: "input",
-        message: "Employee ID:"
-    },
-    {
-        name: "employeeEmail",
-        type: "input",
-        message: "Employee Email Address:"
-    }
-]
+// const profileQuestions = [
+//     {
+//         name: "employeeName",
+//         type: "input",
+//         message: "Employee Name:"
+//     },
+//     {
+//         name: "employeeID",
+//         type: "input",
+//         message: "Employee ID:"
+//     },
+//     {
+//         name: "employeeEmail",
+//         type: "input",
+//         message: "Employee Email Address:"
+//     }
+// ]
 
-const specialQuestions = {
-    manager: {
-        name: "managerOffice",
-        type: "input",
-        message: "Office Number"
+// const specialQuestions = {
+//     manager: {
+//         name: "managerOffice",
+//         type: "input",
+//         message: "Office Number"
+//     },
+//     engineer: {
+//         name: "engineerGithub",
+//         type: "input",
+//         message: "Github Username:"
+//     },
+//     intern: {
+//         name: "internSchool",
+//         type: "input",
+//         message: "School:"
+//     }
+// }
+
+const questionProfiles = {
+    profileQuestions: [
+        {
+            name: "employeeName",
+            type: "input",
+            message: "Employee Name:"
+        },
+        {
+            name: "employeeID",
+            type: "input",
+            message: "Employee ID:"
+        },
+        {
+            name: "employeeEmail",
+            type: "input",
+            message: "Employee Email Address:"
+        }
+    ],
+    specialQuestions: {
+        manager: [{
+            name: "managerOffice",
+            type: "input",
+            message: "Office Number"
+        }],
+        engineer: [{
+            name: "engineerGithub",
+            type: "input",
+            message: "Github Username:"
+        }],
+        intern: [{
+            name: "internSchool",
+            type: "input",
+            message: "School:"
+        }]
     },
-    engineer: {
-        name: "engineerGithub",
-        type: "input",
-        message: "Github Username:"
-    },
-    intern: {
-        name: "internSchool",
-        type: "input",
-        message: "School:"
+    getQuestions(type){
+        return this.profileQuestions.concat(this.specialQuestions[type])
     }
 }
 
+let teamArray = [];
 
-const engineerQuestions = profileQuestions.slice()
-engineerQuestions.push(specialQuestions.engineer);
+// function getManagerQuestions() {
+//     const questions = questionProfiles.profileQuestions.concat(questionProfiles.specialQuestions.manager)
+//     return questions;
+// }
 
-const internQuestions = profileQuestions.slice()
-internQuestions.push(specialQuestions.intern);
+// function getInternQuestions() {
+//     const questions = questionProfiles.profileQuestions.concat(questionProfiles.specialQuestions.intern)
+//     return questions;
+// }
 
-const managerQuestions = profileQuestions.slice()
-managerQuestions.push(specialQuestions.manager);
+// function getEngineerQuestions() {
+//     const questions = questionProfiles.profileQuestions.concat(questionProfiles.specialQuestions.engineer)
+//     return questions;
+// }
 
+// function getQuestions(type) {
+//     return questionProfiles.profileQuestions.concat(questionProfiles.specialQuestions[type]);
+// }
 
+// console.log(getManagerQuestions());
+
+// const internQuestions = profileQuestions.slice()
+// internQuestions.push(specialQuestions.intern);
+
+// const managerQuestions = profileQuestions.slice()
+// managerQuestions.push(specialQuestions.manager);
 
 const menuOptions = ["Add Engineer", "Add Intern", "Finish Building Team"];
 
@@ -81,8 +138,7 @@ const promptForNextEmployee = () => {
     })
 }
 
-
-function displayMenu(response) {
+const displayMenu = (response) => {
     switch (response.promptNext) {
         case menuOptions[0]: promptForEngineer();
             break;
@@ -90,7 +146,6 @@ function displayMenu(response) {
             break;
         case menuOptions[2]: finishBuildingTeam();
             break;
-
     }
 }
 
@@ -98,7 +153,7 @@ const promptForEngineer = () => {
     inquirer.prompt(
         //engineer questions
 
-        engineerQuestions
+        questionProfiles.getQuestions("engineer")
         // internQuestions
 
     ).then(response => {
@@ -107,13 +162,11 @@ const promptForEngineer = () => {
     })
 }
 
-
-
 const promptForIntern = () => {
 
     inquirer.prompt(
         //intern questions
-        internQuestions
+        questionProfiles.getQuestions("intern")
 
     ).then(response => {
         // add new intern to employees array
@@ -125,10 +178,13 @@ const promptForManager = () => {
 
     inquirer.prompt(
         //manager questions
-        managerQuestions
-
+      questionProfiles.getQuestions("manager")
+        // getQuestions("manager")
     ).then(response => {
+
+        const manager = new Manager(response.employeeName, response.employeeID, response.employeeEmail, response.managerOffice)
         // add new manager to employees array
+        console.log(manager);
         promptForNextEmployee();
     })
 }
@@ -140,5 +196,4 @@ const buildPage = () => {
 function finishBuildingTeam() {
 
 }
-
 promptForManager();
