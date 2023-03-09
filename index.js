@@ -102,19 +102,30 @@ Creating new ${type} profile:`);
     })
 }
 
+function writeFile(html) {
+    fs.access(OUTPUT_DIR, fs.constants.F_OK, (err) => {
+        if (err) {
+            fs.mkdir(OUTPUT_DIR, (error) => {
+                if (!error){
+                console.log(`"${OUTPUT_DIR}" directory created successfully.`);
+                }
+            });
+        }
+        fs.writeFile(outputPath, html, (err) =>
+            err ? console.error(err) : console.log(`Team Profile saved as "team.html" in ${OUTPUT_DIR}`)
+        )
+    });
+}
+
 const buildPage = () => {
-    console.log(render(teamArray))
-    console.log(`Team Profile saved as"index.html" in folder "/output"`)
+   return render(teamArray);
 }
 
-function finishBuildingTeam() {
-    
-    console.log(teamArray);
-    buildPage()
-    
+function finishBuildingTeam() { 
+    writeFile(buildPage());
 }
 
-function displayWelcome(){
+function displayWelcome() {
     console.log(`
 ~~~ Welcome to c4rli's Team Profile Generator ~~~
 
