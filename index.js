@@ -10,6 +10,7 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./src/page-template.js");
 
+// object containing all of the profile questions for team members
 const teamProfileQuestions = {
     profileQuestions: [
         {
@@ -32,7 +33,7 @@ const teamProfileQuestions = {
         manager: [{
             name: "managerOffice",
             type: "input",
-            message: "Office Number"
+            message: "Office Number:"
         }],
         engineer: [{
             name: "engineerGithub",
@@ -50,12 +51,13 @@ const teamProfileQuestions = {
     }
 }
 
+// initialize array that will contain team member objects
 const teamArray = [];
 
+// menu options for navigating 
 const menuOptions = ["Add Engineer", "Add Intern", "Finish Building Team"];
 
-// TODO: Write Code to gather information about the development team members, and render the HTML file.
-
+// displays the menu options after completing a team member profile
 const promptForNextEmployee = () => {
     inquirer.prompt([{
         name: "promptNext",
@@ -67,6 +69,7 @@ const promptForNextEmployee = () => {
     })
 }
 
+// switch case to handle which type of employee will be built with function
 const displayMenu = (response) => {
     switch (response.promptNext) {
         case menuOptions[0]: promptForEmployee("engineer");
@@ -78,53 +81,63 @@ const displayMenu = (response) => {
     }
 }
 
+// get appropriate questions from teamProfileQuestions and display them
+// pass response to createEmployee
 const promptForEmployee = (type) => {
     console.log(`
 Creating new ${type} profile:`);
 
     inquirer.prompt(
         teamProfileQuestions.getQuestions(type)
-    ).then(response => {
-        let employee = "employee";
 
-        if (type === "manager") {
-            employee = new Manager(response.employeeName, response.employeeID, response.employeeEmail, response.managerOffice);
-        }
-        else if (type === "engineer") {
-            employee = new Engineer(response.employeeName, response.employeeID, response.employeeEmail, response.engineerGithub);
-        }
-        else if (type === "intern") {
-            employee = new Intern(response.employeeName, response.employeeID, response.employeeEmail, response.internSchool);
-        }
-        // add new employee to employees array
-        teamArray.push(employee);
+    ).then(response => {
+        createEmployee(type, response);
         promptForNextEmployee();
     })
 }
 
+// creates employee object based on what type of employee questions were answered
+function createEmployee(type, response) {
+    let employee;
+
+    if (type === "manager") {
+        employee = new Manager(response.employeeName, response.employeeID, response.employeeEmail, response.managerOffice);
+    }
+    else if (type === "engineer") {
+        employee = new Engineer(response.employeeName, response.employeeID, response.employeeEmail, response.engineerGithub);
+    }
+    else if (type === "intern") {
+        employee = new Intern(response.employeeName, response.employeeID, response.employeeEmail, response.internSchool);
+    }
+    // add new employee to employees array
+    teamArray.push(employee);
+}
+
+// check if OUTPUT_DIR exists and if not create it 
+// Then save team profile html to ./output/team.html
 function writeFile(html) {
     fs.access(OUTPUT_DIR, fs.constants.F_OK, (err) => {
         if (err) {
             fs.mkdir(OUTPUT_DIR, (error) => {
-                if (!error){
-                console.log(`"${OUTPUT_DIR}" directory created successfully.`);
+                if (!error) {
+                    console.log(`"/output" directory created successfully.`);
                 }
             });
         }
         fs.writeFile(outputPath, html, (err) =>
-            err ? console.error(err) : console.log(`Team Profile saved as "team.html" in ${OUTPUT_DIR}`)
-        )
+            err ? console.error(err) : console.log(`Team Profile saved as "team.html" in "/output"`));
     });
 }
 
 const buildPage = () => {
-   return render(teamArray);
+    return render(teamArray);
 }
 
-function finishBuildingTeam() { 
+function finishBuildingTeam() {
     writeFile(buildPage());
 }
 
+// welcome message
 function displayWelcome() {
     console.log(`
 ~~~ Welcome to c4rli's Team Profile Generator ~~~
@@ -134,6 +147,7 @@ The generated .html containing your team cards file will be saved in "/output".
 To begin the team must have a manager, please enter the Team Manager's information.`);
 }
 
+// start application
 function appStart() {
     displayWelcome();
     promptForEmployee("manager");
