@@ -10,43 +10,7 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./src/page-template.js");
 
-// const profileQuestions = [
-//     {
-//         name: "employeeName",
-//         type: "input",
-//         message: "Employee Name:"
-//     },
-//     {
-//         name: "employeeID",
-//         type: "input",
-//         message: "Employee ID:"
-//     },
-//     {
-//         name: "employeeEmail",
-//         type: "input",
-//         message: "Employee Email Address:"
-//     }
-// ]
-
-// const specialQuestions = {
-//     manager: {
-//         name: "managerOffice",
-//         type: "input",
-//         message: "Office Number"
-//     },
-//     engineer: {
-//         name: "engineerGithub",
-//         type: "input",
-//         message: "Github Username:"
-//     },
-//     intern: {
-//         name: "internSchool",
-//         type: "input",
-//         message: "School:"
-//     }
-// }
-
-const questionProfiles = {
+const teamProfileQuestions = {
     profileQuestions: [
         {
             name: "employeeName",
@@ -86,46 +50,11 @@ const questionProfiles = {
     }
 }
 
-let teamArray = [];
-
-// function getManagerQuestions() {
-//     const questions = questionProfiles.profileQuestions.concat(questionProfiles.specialQuestions.manager)
-//     return questions;
-// }
-
-// function getInternQuestions() {
-//     const questions = questionProfiles.profileQuestions.concat(questionProfiles.specialQuestions.intern)
-//     return questions;
-// }
-
-// function getEngineerQuestions() {
-//     const questions = questionProfiles.profileQuestions.concat(questionProfiles.specialQuestions.engineer)
-//     return questions;
-// }
-
-// function getQuestions(type) {
-//     return questionProfiles.profileQuestions.concat(questionProfiles.specialQuestions[type]);
-// }
-
-// console.log(getManagerQuestions());
-
-// const internQuestions = profileQuestions.slice()
-// internQuestions.push(specialQuestions.intern);
-
-// const managerQuestions = profileQuestions.slice()
-// managerQuestions.push(specialQuestions.manager);
+const teamArray = [];
 
 const menuOptions = ["Add Engineer", "Add Intern", "Finish Building Team"];
 
 // TODO: Write Code to gather information about the development team members, and render the HTML file.
-
-// inquirer.prompt(
-//     profileQuestions
-// ).then(response => {
-//     // promptForEngineer();
-//     // populate manager info
-//     promptForNextEmployee ()
-// })
 
 const promptForNextEmployee = () => {
     inquirer.prompt([{
@@ -150,10 +79,14 @@ const displayMenu = (response) => {
 }
 
 const promptForEmployee = (type) => {
+    console.log(`
+Creating new ${type} profile:`);
+
     inquirer.prompt(
-        questionProfiles.getQuestions(type)
+        teamProfileQuestions.getQuestions(type)
     ).then(response => {
         let employee = "employee";
+
         if (type === "manager") {
             employee = new Manager(response.employeeName, response.employeeID, response.employeeEmail, response.managerOffice);
         }
@@ -163,65 +96,36 @@ const promptForEmployee = (type) => {
         else if (type === "intern") {
             employee = new Intern(response.employeeName, response.employeeID, response.employeeEmail, response.internSchool);
         }
-        // add new engineer to employees array
+        // add new employee to employees array
         teamArray.push(employee);
         promptForNextEmployee();
     })
 }
 
-// const promptForEngineer = () => {
-//     inquirer.prompt(
-//         //engineer questions
-
-//         questionProfiles.getQuestions("engineer")
-//         // internQuestions
-
-//     ).then(response => {
-//         const engineer = new Engineer(response.employeeName, response.employeeID, response.employeeEmail, response.engineerGithub)
-
-//         // add new engineer to employees array
-//         teamArray.push(engineer);
-//         promptForNextEmployee();
-//     })
-// }
-
-// const promptForIntern = () => {
-
-//     inquirer.prompt(
-//         //intern questions
-//         questionProfiles.getQuestions("intern")
-
-//     ).then(response => {
-//         const intern = new Intern(response.employeeName, response.employeeID, response.employeeEmail, response.internSchool)
-
-//         // add new intern to employees array
-//         teamArray.push(intern);
-//         promptForNextEmployee();
-//     })
-// }
-
-// const promptForManager = () => {
-
-//     inquirer.prompt(
-//         //manager questions
-//         questionProfiles.getQuestions("manager")
-//         // getQuestions("manager")
-//     ).then(response => {
-//         const manager = new Manager(response.employeeName, response.employeeID, response.employeeEmail, response.managerOffice)
-//         // add new manager to employees array
-//         teamArray.push(manager);
-//         promptForNextEmployee();
-//     })
-// }
-
 const buildPage = () => {
-    // render(myArrayOfTeamMembers)
     console.log(render(teamArray))
+    console.log(`Team Profile saved as"index.html" in folder "/output"`)
 }
 
 function finishBuildingTeam() {
+    
     console.log(teamArray);
     buildPage()
+    
 }
-// promptForManager();
-promptForEmployee("manager");
+
+function displayWelcome(){
+    console.log(`
+~~~ Welcome to c4rli's Team Profile Generator ~~~
+
+Enter the employee details as prompted, use [enter] to save a value.
+The generated .html containing your team cards file will be saved in "/output".
+To begin the team must have a manager, please enter the Team Manager's information.`);
+}
+
+function appStart() {
+    displayWelcome();
+    promptForEmployee("manager");
+}
+
+appStart();
